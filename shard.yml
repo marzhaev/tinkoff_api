@@ -1,0 +1,9 @@
+name: tinkoff_api
+version: 0.1.0
+
+authors:
+  - Mikhail Arzhaev <marzhaev@texenergo.com>
+
+crystal: 0.36.1
+
+license: MIT
