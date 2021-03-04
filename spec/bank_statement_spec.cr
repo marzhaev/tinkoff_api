@@ -97,7 +97,7 @@ describe TinkoffApi::BankStatement::Response do
     obj.payer_bic.should eq( "044525593" )
     obj.payer_bank.should eq( "АО \"АЛЬФА-БАНК\"" )
     obj.charge_date.to_time.should eq( Time.utc(2021, 3, 2, 0, 0, 0) )
-    obj.recipient.should eq( "ООО \"КОНДИТЕРСКАЯ\"" )
+    obj.recipient_name.should eq( "ООО \"КОНДИТЕРСКАЯ\"" )
     obj.recipient_inn.should eq( "7700000000" )
     obj.recipient_account.should eq( "40702810000000000000" )
     obj.recipient_corr_account.should eq( "30101810000000000001" )
@@ -117,5 +117,15 @@ describe TinkoffApi::BankStatement::Response do
     obj.id.should eq("39")
     obj.amount.should eq(16724)
     obj.tax_evidence.should eq("ТП")
+  end
+
+  it "returns payer as a separate class" do
+    obj = TinkoffApi::BankStatement::Response.from_json(sample).operation[0]
+    obj.payer.inn.should eq( "5000000001" )
+  end
+
+  it "returns recipient as a separate class" do
+    obj = TinkoffApi::BankStatement::Response.from_json(sample).operation[0]
+    obj.recipient.inn.should eq( "7700000000" )
   end
 end
