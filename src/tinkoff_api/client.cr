@@ -8,7 +8,7 @@ module TinkoffApi
       uri = URI.parse(TINKOFF_SERVER)
       @client = HTTP::Client.new(uri)
 
-      raise ConfigurationException.new("Не задан ключ доступа к токен Тинькоффа для сценария селф-сервиса.") unless ENV["TINKOFF_ACCESS_TOKEN"]?
+      raise ConfigurationException.new("Не задан ключ доступа к токен Тинькоффа для сценария селф-сервиса - TINKOFF_ACCESS_TOKEN.") unless ENV["TINKOFF_ACCESS_TOKEN"]?
 
       @client.before_request do |request|
         request.headers.add("Content-Type", "application/json")

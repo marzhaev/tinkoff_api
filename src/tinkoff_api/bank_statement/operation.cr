@@ -10,6 +10,25 @@ module TinkoffApi
         Recipient
       end
 
+      # Позволяет инициализировать платёжное поручение для последующего ручного заполнения
+      def initialize
+        @id = ""
+        @payer_name = ""
+        @payer_bic = ""
+        @payer_bank = ""
+        @recipient_account = ""
+        @recipient_bic = ""
+        @recipient_bank = ""
+        @operation_type = ""
+        @payment_purpose = ""
+        @creator_status = ""
+        @recipient_name = ""
+        @date = TinkoffApi::Date.new
+        @draw_date = TinkoffApi::Date.new
+        @charge_date = TinkoffApi::Date.new
+        @amount = 0.0
+      end
+
       {% for f in ["id", "payerName", "payerInn?", "payerAccount?", "payerCorrAccount?", "payerBic", "payerBank", "recipientInn?", "recipientAccount", "recipientCorrAccount?", "recipientBic", "recipientBank", "operationType", "paymentPurpose", "creatorStatus", "payerKpp?", "recipientKpp?", "executionOrder?", "paymentType?", "uin?", "kbk?", "oktmo?", "taxEvidence?", "taxPeriod?", "taxDocNumber?", "taxDocDate?", "taxType?"] %}
         @[JSON::Field(key: {{ f.id.stringify.gsub(/\?/, "") }} )]
         property {{ f.id.stringify.underscore.gsub(/\?/, "").id }} : String{{ f.id.stringify.ends_with?('?') ? "?".id : "".id }}
