@@ -15,10 +15,18 @@ module TinkoffApi
     end
 
     # Инициализирует время в нужном формате из строки
+    # Формат 1 - 2021-01-02
+    # Формат 2 - 02.01.2021
     # Бросает ошибку если неправильный формат
     def initialize(string : String)
-      raise DateException.new("Дата должна быть в виде 2021-01-02") unless string =~ /^20\d{2}-\d{2}-\d{2}$/
-      @value = string
+      case string
+      when /^20\d{2}-\d{2}-\d{2}$/ then @value = string
+      when /^\d{2}\.\d{2}\.20\d{2}$/ then
+        m = str.match(/^(\d{2})\.(\d{2})\.(20\d{2})$/).as(Regex::MatchData)
+        @value = "#{m[3]}-#{m[2]}-#{m[1]}"
+      else
+        raise DateException.new("Дата должна быть в виде 2021-01-02")
+      end
     end
 
     # Инициализирует время в нужном формате из стандартного Time
