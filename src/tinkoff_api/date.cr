@@ -22,7 +22,7 @@ module TinkoffApi
       case string
       when /^20\d{2}-\d{2}-\d{2}$/ then @value = string
       when /^\d{2}\.\d{2}\.20\d{2}$/ then
-        m = str.match(/^(\d{2})\.(\d{2})\.(20\d{2})$/).as(Regex::MatchData)
+        m = string.match(/^(\d{2})\.(\d{2})\.(20\d{2})$/).as(Regex::MatchData)
         @value = "#{m[3]}-#{m[2]}-#{m[1]}"
       else
         raise DateException.new("Дата должна быть в виде 2021-01-02")
