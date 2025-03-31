@@ -7,11 +7,26 @@ module TinkoffApi
       @value = Time.local.to_s("%Y-%m-%d")
     end
 
+    # Инициализирует время в нужном формате из стандартного Time
+    def initialize(time : Time)
+      @value = time.to_s("%Y-%m-%d")
+    end
+
     # Инициализирует время в нужном формате из JSON
     # Бросает ошибку если неправильный формат
     def initialize(puller : JSON::PullParser)
-      @value = puller.read_string
-      raise DateException.new("Дата должна быть в виде 2021-01-02") unless @value =~ /^20\d{2}-\d{2}-\d{2}$/
+      string = puller.read_string
+      case string
+      when /^20\d{2}-\d{2}-\d{2}$/ then @value = string
+      when /^\d{2}\.\d{2}\.20\d{2}$/ then
+        m = string.match(/^(\d{2})\.(\d{2})\.(20\d{2})$/).as(Regex::MatchData)
+        @value = "#{m[3]}-#{m[2]}-#{m[1]}"
+      when /^20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/ then
+        m = string.match(/^(20\d{2})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}Z$/).as(Regex::MatchData)
+        @value = "#{m[1]}-#{m[2]}-#{m[3]}"
+      else
+        raise DateException.new("Дата должна быть в виде 2021-01-02")
+      end
     end
 
     # Инициализирует время в нужном формате из строки
@@ -24,14 +39,13 @@ module TinkoffApi
       when /^\d{2}\.\d{2}\.20\d{2}$/ then
         m = string.match(/^(\d{2})\.(\d{2})\.(20\d{2})$/).as(Regex::MatchData)
         @value = "#{m[3]}-#{m[2]}-#{m[1]}"
+      when /^20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/ then
+        raise "YAHOO"
+        m = string.match(/^(20\d{2})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}Z$/).as(Regex::MatchData)
+        @value = "#{m[1]}-#{m[2]}-#{m[3]}"
       else
         raise DateException.new("Дата должна быть в виде 2021-01-02")
       end
-    end
-
-    # Инициализирует время в нужном формате из стандартного Time
-    def initialize(time : Time)
-      @value = time.to_s("%Y-%m-%d")
     end
 
     # Переводит дату из выписки в стандартный Time

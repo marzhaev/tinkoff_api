@@ -1,5 +1,3 @@
-require "json"
-
 module TinkoffApi
   module Webhooks
     class Operation
@@ -32,9 +30,9 @@ module TinkoffApi
       property counter_party : CounterParty
       property description : String
       @[JSON::Field(key: "authorizationDate")]
-      property authorization_date : String
+      property authorization_date : TinkoffApi::Date
       @[JSON::Field(key: "trxnPostDate")]
-      property trxn_post_date : String
+      property trxn_post_date : TinkoffApi::Date
       @[JSON::Field(key: "payVo")]
       property pay_vo : String
       property priority : String?
@@ -49,13 +47,13 @@ module TinkoffApi
       @[JSON::Field(key: "payPurpose")]
       property pay_purpose : String
       @[JSON::Field(key: "chargeDate")]
-      property charge_date : String?
+      property charge_date : TinkoffApi::Date?
       @[JSON::Field(key: "drawDate")]
-      property draw_date : String
+      property draw_date : TinkoffApi::Date
       property receiver : Party
       property payer : Party
       @[JSON::Field(key: "docDate")]
-      property doc_date : String
+      property doc_date : TinkoffApi::Date
       @[JSON::Field(key: "VO")]
       property vo : String
 
