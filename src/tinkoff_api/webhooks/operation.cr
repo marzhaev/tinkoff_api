@@ -25,7 +25,7 @@ module TinkoffApi
       @[JSON::Field(key: "operationCurrencyDigitalCode")]
       property operation_currency_digital_code : String
       @[JSON::Field(key: "rubleAmount")]
-      property ruble_amount : String
+      property ruble_amount : String?
       @[JSON::Field(key: "counterParty")]
       property counter_party : CounterParty
       property description : String
