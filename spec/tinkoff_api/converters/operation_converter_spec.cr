@@ -9,8 +9,12 @@ module TinkoffApi
           webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["credit_transaction"])
           bank_op = OperationConverter.to_bank_statement(webhook_op)
 
+          bank_op.should_not be_nil
+          bank_op.should be_a(BankStatement::Operation)
+          bank_op = bank_op.not_nil!
+
           # Basic fields
-          bank_op.id.should eq "bdfbd8be-6d5d-0064-8f7f-912644cad4bb"
+          bank_op.id.should eq "267"
           bank_op.operation_type.should eq "Credit"
           bank_op.amount.should eq 19588.49
           bank_op.payment_purpose.should eq "Оплата по счету № 25-фжр-13 от 31.03.2025 за электротехническую продукцию Сумма 19588-49 В т.ч. НДС  (20%) 3264-75"
@@ -38,11 +42,15 @@ module TinkoffApi
           webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["debit_transaction"])
           bank_op = OperationConverter.to_bank_statement(webhook_op)
 
+          bank_op.should_not be_nil
+          bank_op.should be_a(BankStatement::Operation)
+          bank_op = bank_op.not_nil!
+
           # Basic fields
-          bank_op.id.should eq "73c53955-292a-009e-955b-d0e8122894d9"
+          bank_op.id.should eq "298462"
           bank_op.operation_type.should eq "Debit"
           bank_op.amount.should eq 29.0
-          bank_op.payment_purpose.should eq "Комиссия за внешний банковский перевод. Договор 7000899232"
+          bank_op.payment_purpose.should eq "Комиссия за внешний банковский перевод"
 
           # Payer information
           bank_op.payer_name.should eq "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ ТЭКСЭНЕРГО ЭЛЕКТРИК"
@@ -67,8 +75,12 @@ module TinkoffApi
           webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["loan_return_transaction"])
           bank_op = OperationConverter.to_bank_statement(webhook_op)
 
+          bank_op.should_not be_nil
+          bank_op.should be_a(BankStatement::Operation)
+          bank_op = bank_op.not_nil!
+
           # Basic fields
-          bank_op.id.should eq "1fd66ca4-47ac-00d7-8df6-06eef0da23dd"
+          bank_op.id.should eq "203"
           bank_op.operation_type.should eq "Credit"
           bank_op.amount.should eq 200000.0
           bank_op.payment_purpose.should eq "Частичный возврат займа по договору №2 от 04.09.2024 г.Сумма 200000-00Без налога (НДС)"
@@ -91,6 +103,14 @@ module TinkoffApi
           bank_op.creator_status.should eq "Active"
           bank_op.payment_type.should eq "payment-order"
         end
+
+        it "returns nil if an important field is missing" do
+          webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["debit_transaction_without_ruble_amount"])
+          bank_op = OperationConverter.to_bank_statement(webhook_op)
+
+          bank_op.should be_nil
+        end
+        
       end
     end
   end

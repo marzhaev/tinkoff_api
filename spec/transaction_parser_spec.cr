@@ -22,8 +22,8 @@ describe TinkoffApi::Webhooks::Operation do
     operation.merch.id.should eq "TCS1"
     
     # Test receiver
-    operation.receiver.name.should eq "ООО ТЭКСЭНЕРГО ЭЛЕКТРИК"
-    operation.receiver.inn.should eq "5044082271"
+    operation.receiver.try(&.name).should eq "ООО ТЭКСЭНЕРГО ЭЛЕКТРИК"
+    operation.receiver.try(&.inn).should eq "5044082271"
   end
 
   it "parses debit transaction correctly" do
@@ -68,6 +68,14 @@ describe TinkoffApi::Webhooks::Operation do
     
     # Test merchant
     operation.merch.id.should eq "TCS1"
+  end
+
+  it "parses debit transaction without ruble amount correctly" do
+    json = JSON_FIXTURES["debit_transaction_without_ruble_amount"]
+    operation = TinkoffApi::Webhooks::Operation.parse_transactions(json)
+
+    operation.operation_id.should eq "8b2fe732-db35-00da-a6bb-6b80e513bf36"
+    operation.type_of_operation.should eq TinkoffApi::Webhooks::Operation::OperationType::Debit
   end
 
   it "raises error for unknown operation type" do

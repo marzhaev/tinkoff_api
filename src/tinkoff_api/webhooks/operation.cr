@@ -34,7 +34,7 @@ module TinkoffApi
       @[JSON::Field(key: "trxnPostDate")]
       property trxn_post_date : TinkoffApi::Date
       @[JSON::Field(key: "payVo")]
-      property pay_vo : String
+      property pay_vo : String?
       property priority : String?
       @[JSON::Field(key: "cardNumber")]
       property card_number : String
@@ -45,17 +45,17 @@ module TinkoffApi
       property acquirer_id : String
       property rrn : String?
       @[JSON::Field(key: "payPurpose")]
-      property pay_purpose : String
+      property pay_purpose : String?
       @[JSON::Field(key: "chargeDate")]
       property charge_date : TinkoffApi::Date?
       @[JSON::Field(key: "drawDate")]
-      property draw_date : TinkoffApi::Date
-      property receiver : Party
-      property payer : Party
+      property draw_date : TinkoffApi::Date?
+      property receiver : Party?
+      property payer : Party?
       @[JSON::Field(key: "docDate")]
-      property doc_date : TinkoffApi::Date
+      property doc_date : TinkoffApi::Date?
       @[JSON::Field(key: "VO")]
-      property vo : String
+      property vo : String?
 
       class CounterParty
         include JSON::Serializable
