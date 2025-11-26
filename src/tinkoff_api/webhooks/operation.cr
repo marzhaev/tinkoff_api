@@ -37,7 +37,7 @@ module TinkoffApi
       property pay_vo : String?
       property priority : String?
       @[JSON::Field(key: "cardNumber")]
-      property card_number : String
+      property card_number : String?
       property ucid : String
       property mcc : String
       property merch : Merchant
