@@ -38,7 +38,7 @@ module TinkoffApi
       property priority : String?
       @[JSON::Field(key: "cardNumber")]
       property card_number : String?
-      property ucid : String
+      property ucid : String?
       property mcc : String
       property merch : Merchant
       @[JSON::Field(key: "acquirerId")]
@@ -98,7 +98,7 @@ module TinkoffApi
       enum OperationType
         Debit
         Credit
-    
+
         def self.from_json(value : JSON::PullParser) : self
           case value.string_value
           when "Debit"
@@ -109,7 +109,7 @@ module TinkoffApi
             raise "Unknown operation type: #{value.string_value}"
           end
         end
-    
+
         def to_json(json : JSON::Builder)
           json.string(to_s)
         end
