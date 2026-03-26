@@ -30,9 +30,9 @@ module TinkoffApi
       property counter_party : CounterParty
       property description : String
       @[JSON::Field(key: "authorizationDate")]
-      property authorization_date : TinkoffApi::Date
+      property authorization_date : TinkoffApi::Date?
       @[JSON::Field(key: "trxnPostDate")]
-      property trxn_post_date : TinkoffApi::Date
+      property trxn_post_date : TinkoffApi::Date?
       @[JSON::Field(key: "payVo")]
       property pay_vo : String?
       property priority : String?

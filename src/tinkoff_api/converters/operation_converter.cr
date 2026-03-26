@@ -7,7 +7,7 @@ module TinkoffApi
         # Basic fields
         operation.id = webhook_operation.document_number
         operation.operation_type = webhook_operation.type_of_operation.to_s
-        operation.payment_purpose = webhook_operation.description
+        operation.payment_purpose = webhook_operation.pay_purpose || webhook_operation.description
         operation.amount = webhook_operation.operation_amount.to_f64
 
         # Dates
