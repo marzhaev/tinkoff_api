@@ -12,14 +12,15 @@ module TinkoffApi
 
         # Dates
         if authorization_date = webhook_operation.draw_date
-          operation.authorization_date = authorization_date
+          operation.date = authorization_date
         end
-        operation.date = webhook_operation.authorization_date
+
         if draw_date = webhook_operation.draw_date
           operation.draw_date = draw_date
         else
           return
         end
+        
         if charge_date = webhook_operation.charge_date
           operation.charge_date = charge_date
         end
