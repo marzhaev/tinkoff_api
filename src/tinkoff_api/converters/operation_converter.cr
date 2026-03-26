@@ -11,6 +11,9 @@ module TinkoffApi
         operation.amount = webhook_operation.operation_amount.to_f64
 
         # Dates
+        if authorization_date = webhook_operation.draw_date
+          operation.authorization_date = authorization_date
+        end
         operation.date = webhook_operation.authorization_date
         if draw_date = webhook_operation.draw_date
           operation.draw_date = draw_date
