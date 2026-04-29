@@ -39,7 +39,7 @@ module TinkoffApi
       @[JSON::Field(key: "cardNumber")]
       property card_number : String?
       property ucid : String?
-      property mcc : String
+      property mcc : String?
       property merch : Merchant
       @[JSON::Field(key: "acquirerId")]
       property acquirer_id : String
