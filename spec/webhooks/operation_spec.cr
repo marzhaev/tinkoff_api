@@ -71,5 +71,8 @@ describe TinkoffApi::Webhooks::Operation do
     operation.account_number.should eq("40702810910000000000")
     operation.account_amount.should eq("65624")
     operation.account_currency_digital_code.should eq("643")
+    operation.authorization_date.should eq Time.parse_rfc3339("2025-05-14T06:55:42.495Z")
+    operation.trxn_post_date.should eq Time.parse_rfc3339("2025-05-14T06:56:03Z")
+    operation.draw_date.should eq Time.parse_rfc3339("2025-05-14T06:55:42Z")
   end
 end

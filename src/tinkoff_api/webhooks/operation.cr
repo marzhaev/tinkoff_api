@@ -1,5 +1,6 @@
 module TinkoffApi
   module Webhooks
+    # Schema: https://developer.tbank.ru/docs/intro/webhooks/account-info
     class Operation
       include JSON::Serializable
 
@@ -9,30 +10,25 @@ module TinkoffApi
       property type_of_operation : OperationType
       @[JSON::Field(key: "accountNumber")]
       property account_number : String
+      @[JSON::Field(key: "documentNumber")]
+      property document_number : String?
+      @[JSON::Field(key: "operationAmount")]
+      property operation_amount : String?
+      @[JSON::Field(key: "operationCurrencyDigitalCode")]
+      property operation_currency_digital_code : String?
       @[JSON::Field(key: "accountAmount")]
       property account_amount : String
       @[JSON::Field(key: "accountCurrencyDigitalCode")]
       property account_currency_digital_code : String
-      property status : String
-      @[JSON::Field(key: "operationStatus")]
-      property operation_status : String
-      property bic : String
-      property category : String
-      @[JSON::Field(key: "documentNumber")]
-      property document_number : String
-      @[JSON::Field(key: "operationAmount")]
-      property operation_amount : String
-      @[JSON::Field(key: "operationCurrencyDigitalCode")]
-      property operation_currency_digital_code : String
       @[JSON::Field(key: "rubleAmount")]
       property ruble_amount : String?
       @[JSON::Field(key: "counterParty")]
-      property counter_party : CounterParty
-      property description : String
+      property counter_party : CounterParty?
+      property description : String?
       @[JSON::Field(key: "authorizationDate")]
-      property authorization_date : TinkoffApi::Date?
+      property authorization_date : Time?
       @[JSON::Field(key: "trxnPostDate")]
-      property trxn_post_date : TinkoffApi::Date?
+      property trxn_post_date : Time?
       @[JSON::Field(key: "payVo")]
       property pay_vo : String?
       property priority : String?
@@ -40,59 +36,80 @@ module TinkoffApi
       property card_number : String?
       property ucid : String?
       property mcc : String?
-      property merch : Merchant
+      property merch : Merchant?
       @[JSON::Field(key: "acquirerId")]
-      property acquirer_id : String
+      property acquirer_id : String?
+      property status : String
+      @[JSON::Field(key: "operationStatus")]
+      property operation_status : String
+      property bic : String
       property rrn : String?
+      property category : String
       @[JSON::Field(key: "payPurpose")]
       property pay_purpose : String?
-      @[JSON::Field(key: "chargeDate")]
-      property charge_date : TinkoffApi::Date?
-      @[JSON::Field(key: "drawDate")]
-      property draw_date : TinkoffApi::Date?
       property receiver : Party?
       property payer : Party?
+      @[JSON::Field(key: "drawDate")]
+      property draw_date : Time?
+      @[JSON::Field(key: "chargeDate")]
+      property charge_date : Time?
+      property kbk : String?
+      property oktmo : String?
+      @[JSON::Field(key: "taxEvidence")]
+      property tax_evidence : String?
+      @[JSON::Field(key: "taxPeriod")]
+      property tax_period : String?
+      @[JSON::Field(key: "taxDocNumber")]
+      property tax_doc_number : String?
+      @[JSON::Field(key: "taxDocDate")]
+      property tax_doc_date : String?
+      @[JSON::Field(key: "nalType")]
+      property nal_type : String?
       @[JSON::Field(key: "docDate")]
-      property doc_date : TinkoffApi::Date?
+      property doc_date : Time?
       @[JSON::Field(key: "VO")]
       property vo : String?
 
       class CounterParty
         include JSON::Serializable
 
-        property account : String
+        property account : String?
         @[JSON::Field(key: "bankBic")]
-        property bank_bic : String
+        property bank_bic : String?
         @[JSON::Field(key: "bankName")]
         property bank_name : String?
+        @[JSON::Field(key: "bankSwiftCode")]
+        property bank_swift_code : String?
         @[JSON::Field(key: "corrAccount")]
-        property corr_account : String
-        property inn : String
+        property corr_account : String?
+        property inn : String?
         property kpp : String?
-        property name : String
+        property name : String?
       end
 
       class Merchant
         include JSON::Serializable
 
-        property id : String
+        property id : String?
+        property address : String?
         property city : String?
         property country : String?
+        property index : String?
         property name : String?
       end
 
       class Party
         include JSON::Serializable
 
-        property account : String
-        property name : String
-        property inn : String
+        property account : String?
+        property name : String?
+        property inn : String?
         property kpp : String?
-        property bic : String
+        property bic : String?
         @[JSON::Field(key: "corrAccount")]
-        property corr_account : String
+        property corr_account : String?
         @[JSON::Field(key: "bankName")]
-        property bank_name : String
+        property bank_name : String?
       end
 
       enum OperationType

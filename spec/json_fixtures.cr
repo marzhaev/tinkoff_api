@@ -15,6 +15,15 @@ module JSON_FIXTURES
     {"operationId":"8b2fe732-db35-00da-a6bb-6b80e513bf36","typeOfOperation":"Debit","accountNumber":"40702810910000045892","accountAmount":"20160","accountCurrencyDigitalCode":"643","status":"Active","operationStatus":"transaction","bic":"044525974","category":"contragentPeople","documentNumber":"141","operationAmount":"20160","operationCurrencyDigitalCode":"643","counterParty":{"account":"40702810901600006867","bankBic":"044525593","bankName":"АО \\"АЛЬФА-БАНК\\"","corrAccount":"30101810200000000593","inn":"7715215141","kpp":"504401001","name":"ООО \\"МФК Техэнерго\\""},"description":"Оплата по договору аренды №Т1/21/05-1901 от 19.05.2021. В т.ч. НДС 20% — 3 360 руб","authorizationDate":"2025-04-01T13:42:09Z","trxnPostDate":"2025-04-01T13:44:15Z","priority":"5","cardNumber":"518901******0294","ucid":"1025663161","mcc":"0010","merch":{"id":"SME","city":"MOSCOW","country":"RUS","name":"TBank.Kontragent"},"acquirerId":"999999","rrn":"007572537773"}
   JSON
 
+  CREDIT_TRANSACTION_WITHOUT_MERCH = <<-JSON
+    {"operationId":"bdfbd8be-6d5d-0064-8f7f-912644cad4bb","typeOfOperation":"Credit","accountNumber":"40702810910000045892","accountAmount":"19588.49","accountCurrencyDigitalCode":"643","status":"Active","operationStatus":"transaction","bic":"044525974","category":"incomePeople","documentNumber":"267","operationAmount":"19588.49","operationCurrencyDigitalCode":"643","rubleAmount":"19588.49","counterParty":{"account":"40702810110001754490","bankBic":"044525974","bankName":"АО ТБАНК г. Москва","corrAccount":"30101810145250000974","inn":"5012073362","kpp":"501201001","name":"ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ СОЛ ГРУПП"},"description":"Оплата по счету № 25-фжр-13 от 31.03.2025 за электротехническую продукцию Сумма 19588-49 В т.ч. НДС  (20%) 3264-75","authorizationDate":"2025-03-31T15:07:40Z","trxnPostDate":"2025-03-31T15:08:55Z","payVo":"payment-order","priority":"0","payPurpose":"Оплата по счету № 25-фжр-13 от 31.03.2025 за электротехническую продукцию Сумма 19588-49 В т.ч. НДС  (20%) 3264-75","chargeDate":"2025-03-30T21:00:00Z","drawDate":"2025-03-31T15:08:01Z","receiver":{"account":"40702810910000045892","name":"ООО ТЭКСЭНЕРГО ЭЛЕКТРИК","inn":"5044082271","kpp":"504701001","bic":"044525974","corrAccount":"30101810145250000974","bankName":"АО ТБанк"},"payer":{"account":"40702810110001754490","name":"ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ СОЛ ГРУПП","inn":"5012073362","kpp":"501201001","bic":"044525974","corrAccount":"30101810145250000974","bankName":"АО ТБанк"},"docDate":"2025-03-30T21:00:00Z","VO":"01"}
+  JSON
+
+  # Example from https://developer.tbank.ru/docs/intro/webhooks/account-info
+  OFFICIAL_ACCOUNT_INFO_EXAMPLE = <<-JSON
+    {"operationId":"126cc5a2-41ca-0083-9017-5863a14692df","typeOfOperation":"Credit","accountNumber":"10502810110001087552","documentNumber":"22","operationAmount":"50000","operationCurrencyDigitalCode":"643","accountAmount":"50000","accountCurrencyDigitalCode":"643","rubleAmount":"50000","counterParty":{"account":"10702810413500007617","bankBic":"044525998","bankName":"ТОЧКА ПАО БАНКА \\"ФК ОТКРЫТИЕ\\"","corrAccount":"20601810845250000999","inn":"350601254555","name":"Индивидуальный предприниматель Иванов Иван Иванович"},"description":"Пополнение виртуального счета №69df5ce0-d6d1-43aa-a85a-7a0c16187fee без НДС","authorizationDate":"2022-08-05T11:48:06Z","trxnPostDate":"2022-08-05T11:48:06Z","payVo":"payment-order","priority":"5","cardNumber":"508901******3222","ucid":"1168420505","mcc":"0000","merch":{"address":"Лубянская пл., д.1","city":"Москва","country":"РФ","index":"123103","name":"ТОЧКА ПАО БАНКА"},"status":"Active","operationStatus":"transaction","bic":"044525973","rrn":"005209055711","category":"incomePeople","payPurpose":"Пополнение виртуального счета №69df5ce0-d6d1-43aa-a85a-7a0c16187fee без НДС","receiver":{"account":"40702810110001087552","name":"ООО \\"Название компании\\"","inn":"7669194110","bic":"044525973","corrAccount":"30102810834150000974","bankName":"ТОЧКА ПАО БАНКА \\"ФК ОТКРЫТИЕ\\""},"payer":{"account":"10702810413500007617","name":"Индивидуальный предприниматель Иванов Иван Иванович","inn":"350601254555","bic":"044525998","corrAccount":"20601810845250000999","bankName":"ТОЧКА ПАО БАНКА \\"ФК ОТКРЫТИЕ\\""},"chargeDate":"2022-08-05T11:48:06Z","drawDate":"2022-08-05T11:48:06Z","kbk":"18210501011011000110","oktmo":"34602403101","taxEvidence":"тп","taxPeriod":"ГД.00.2021","taxDocNumber":"0","taxDocDate":"0","nalType":"0","docDate":"2022-07-06T00:00:00Z","VO":"17"}
+  JSON
+
   def self.[](key : String) : String
     case key
     when "credit_transaction"
@@ -25,6 +34,10 @@ module JSON_FIXTURES
       LOAN_RETURN_TRANSACTION
     when "debit_transaction_without_ruble_amount"
       DEBIT_TRANSACTION_WITHOUT_RUBLE_AMOUNT
+    when "credit_transaction_without_merch"
+      CREDIT_TRANSACTION_WITHOUT_MERCH
+    when "official_account_info_example"
+      OFFICIAL_ACCOUNT_INFO_EXAMPLE
     else
       raise "Unknown fixture key: #{key}"
     end
