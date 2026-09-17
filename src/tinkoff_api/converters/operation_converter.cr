@@ -30,6 +30,11 @@ module TinkoffApi
         operation.amount = amount_source.to_f64
         missing << "operationAmount" unless webhook_operation.operation_amount
 
+        unless transaction?(webhook_operation)
+          Log.info { "Skip webhook #{webhook_operation.operation_id}: operationStatus=#{webhook_operation.operation_status} (not a transaction)" }
+          return
+        end
+
         timestamp = webhook_operation.authorization_date ||
                     webhook_operation.doc_date ||
                     webhook_operation.trxn_post_date ||
@@ -40,30 +45,32 @@ module TinkoffApi
           return
         end
         operation.date = timestamp.to_tinkoff
-        missing << "authorizationDate" unless webhook_operation.authorization_date
 
-        if draw_date = webhook_operation.draw_date
-          operation.draw_date = draw_date.to_tinkoff
-        else
-          operation.draw_date = timestamp.to_tinkoff
-          missing << "drawDate"
-        end
+        operation.draw_date = (webhook_operation.draw_date || timestamp).to_tinkoff
 
-        if charge_date = webhook_operation.charge_date
-          operation.charge_date = charge_date.to_tinkoff
-        else
-          operation.charge_date = (webhook_operation.draw_date || timestamp).to_tinkoff
-          missing << "chargeDate"
-        end
+        charge_timestamp = webhook_operation.charge_date ||
+                           webhook_operation.doc_date ||
+                           webhook_operation.draw_date ||
+                           timestamp
+        operation.charge_date = charge_timestamp.to_tinkoff
 
         apply_payer(operation, webhook_operation, missing)
         apply_receiver(operation, webhook_operation, missing)
+
+        if operation.payer_name.blank? || operation.recipient_name.blank?
+          Log.warn { "Skip webhook #{webhook_operation.operation_id}: incomplete parties (payer=#{operation.payer_name.inspect}, receiver=#{operation.recipient_name.inspect})" }
+          return
+        end
 
         unless missing.empty?
           Log.warn { "Webhook #{webhook_operation.operation_id}: converted with missing #{missing.join(", ")}" }
         end
 
         operation
+      end
+
+      private def self.transaction?(webhook : Webhooks::Operation) : Bool
+        webhook.operation_status.compare("transaction", case_insensitive: true) == 0
       end
 
       private def self.apply_payer(operation : BankStatement::Operation, webhook : Webhooks::Operation, missing : Array(String))

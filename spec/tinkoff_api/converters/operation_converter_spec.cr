@@ -129,22 +129,54 @@ module TinkoffApi
           bank_op.draw_date.value.should eq "2025-04-01"
         end
 
-        it "converts a partial webhook using fallbacks instead of dropping it" do
+        it "converts a transaction that is missing drawDate and chargeDate" do
+          json = %({
+            "operationId":"partial-dates",
+            "typeOfOperation":"Credit",
+            "accountNumber":"40702810910000045892",
+            "accountAmount":"100",
+            "accountCurrencyDigitalCode":"643",
+            "status":"Active",
+            "operationStatus":"transaction",
+            "bic":"044525974",
+            "category":"incomePeople",
+            "documentNumber":"1",
+            "operationAmount":"100",
+            "authorizationDate":"2025-03-31T15:07:40Z",
+            "payer":{"account":"40702810110001754490","name":"Payer","inn":"1","bic":"044525974","corrAccount":"30101810145250000974","bankName":"Bank"},
+            "receiver":{"account":"40702810910000045892","name":"Receiver","inn":"2","bic":"044525974","corrAccount":"30101810145250000974","bankName":"Bank"}
+          })
+          webhook_op = Webhooks::Operation.parse_transactions(json)
+          bank_op = OperationConverter.to_bank_statement(webhook_op).not_nil!
+
+          bank_op.date.value.should eq "2025-03-31"
+          bank_op.draw_date.value.should eq "2025-03-31"
+          bank_op.charge_date.value.should eq "2025-03-31"
+          bank_op.payer_name.should eq "Payer"
+          bank_op.recipient_name.should eq "Receiver"
+        end
+
+        it "converts a fee transaction without chargeDate using docDate" do
+          webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["debit_fee_without_charge_date"])
+          bank_op = OperationConverter.to_bank_statement(webhook_op).not_nil!
+
+          bank_op.id.should eq "322903"
+          bank_op.amount.should eq 379.0
+          bank_op.date.value.should eq "2026-09-17"
+          bank_op.draw_date.value.should eq "2026-09-17"
+          bank_op.charge_date.value.should eq "2026-09-16"
+          bank_op.payer_name.should eq %(ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ТЭКСЭНЕРГО ЭЛЕКТРИК")
+          bank_op.recipient_name.should eq %(АО "ТБанк")
+        end
+
+        it "skips authorizations that are not posted transactions" do
+          webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["credit_authorization_without_parties"])
+          OperationConverter.to_bank_statement(webhook_op).should be_nil
+        end
+
+        it "skips a debit transaction when the payer name cannot be filled" do
           webhook_op = Webhooks::Operation.parse_transactions(JSON_FIXTURES["debit_transaction_without_ruble_amount"])
-          bank_op = OperationConverter.to_bank_statement(webhook_op)
-
-          bank_op.should_not be_nil
-          bank_op = bank_op.not_nil!
-
-          bank_op.id.should eq "141"
-          bank_op.amount.should eq 20160.0
-          bank_op.date.value.should eq "2025-04-01"
-          bank_op.draw_date.value.should eq "2025-04-01"
-          bank_op.payer_account.should eq "40702810910000045892"
-          bank_op.payer_bic.should eq "044525974"
-          bank_op.recipient_name.should eq %(ООО "МФК Техэнерго")
-          bank_op.recipient_account.should eq "40702810901600006867"
-          bank_op.recipient_bic.should eq "044525593"
+          OperationConverter.to_bank_statement(webhook_op).should be_nil
         end
 
         it "returns nil when the webhook has no dates" do
